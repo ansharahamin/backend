@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
+import "dotenv/config"
 import dns from 'node:dns/promises'
-dns.setServers(['1.1.1.1','8.8.8.8'])
+dns.setServers(['8.8.8.8','1.1.1.1'])
 async function main() {
   try {
-    await mongoose.connect("mongodb+srv://insharahamin1250_db_user:8cckfVacEqk1RT5T@cluster0.hbxeyvj.mongodb.net/post");
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("connected to db");
   } catch (err) {
     console.log("DB connection error:", err.message);
