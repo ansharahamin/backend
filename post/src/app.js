@@ -1,16 +1,27 @@
 import express from "express"
+import postModel from "../model/schema.js";
+import main from '../db/db.js'
 const app = express();
 app.use(express.json())
 
 
-const user = [{"userName":"Ansharah","id":"1"},{"userName":"insharah","id":"2"}]
-app.get('/users', (req, res) => {
-  res.send(user);
+const user = [{"title":"Ansharah","desc":"amin","id":"1"},{"title":"insharah","desc":"amin","id":"2"}]
+app.get('/users', async (req, res) => {
+  const data = req.body
 });
-app.post('/users', (req, res) => {
-    console.log(req);
-    user.push({id:user.length+1,...req.body})
-    res.send({message: 'User created successfully'});
+app.post('/users', async (req, res) => {
+    try {
+      const data = req.body
+      const newPost = await postModel.create({
+        title: data.title,
+        desc: data.desc
+      })
+      res.status(201).json({message:'Post created!'})
+    } catch (error) {
+      res.status(500).send({message:error.message})
+    }
+  
+   
 });
 
 app.delete('/users/:id',(req,res)=>{
