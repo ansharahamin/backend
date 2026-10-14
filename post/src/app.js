@@ -43,7 +43,7 @@ app.post('/users', async (req, res) => {
 // })
 //mongo delete
 
-pp.delete('/users/:id', async (req, res) => {
+app.delete('/users/:id', async (req, res) => {
   try {
     const id = req.params.id
     const deleted = await postModel.findByIdAndDelete(id)
@@ -62,5 +62,12 @@ if(userId == -1){
   user.splice(userId,1,{id:Number(req.params.id),...req.body})
   res.send({message:'user Updated Successfully'})
 }
+})
+
+app.patch('users/:id',async(req,res)=>{
+  const id = req.params.id;
+  const desc = req.body.desc
+await postModel.findIdAndUpdate({_id:id},{desc})
+res.status(200).json({message:'post updated'})
 })
 export default app
