@@ -1,6 +1,10 @@
 import mongoose from 'mongoose'
 const userSchema = new mongoose.Schema({
-    userName:String,
+    userName:{
+        type:String,
+        required:true,
+        unique:true
+    },
     email:{
         type:String,
         required:true,
@@ -9,6 +13,11 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    role:{
+        type:String,
+        dafault:'user',
+        enum:["user","admin"]
     }
 })
 const userModel = mongoose.model('users',userSchema)
