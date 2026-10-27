@@ -18,7 +18,20 @@ const userSchema = new mongoose.Schema({
         type:String,
         dafault:'user',
         enum:["user","admin"]
-    }
+    },
+    cart:[{
+        product:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"products",
+            required:true
+        },
+        quentity:{
+            type:Number,
+            required:true,
+            min:1,
+            default:1
+        }
+    }]
 })
 const userModel = mongoose.model('users',userSchema)
 export default userModel

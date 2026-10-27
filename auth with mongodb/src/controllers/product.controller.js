@@ -1,3 +1,4 @@
+import userModel from "../models/users.models.js";
 import productModel from "../models/products.model.js";
 import uploadFile from '../../services/storage.service.js'
 async function createProducts(req,res){
@@ -23,4 +24,12 @@ res.status(201).json({
 })
     
 }
-export {createProducts}
+async function getProducts(req,res){
+    try {
+        const products = await productModel.find().populate("admin","userName email")
+        res.status(200).json({message:"data is fetched successfully"},products)
+    } catch (error) {
+        res.status(500).json({message:'failed to fetched',err:error.message})
+    }
+}
+export {createProducts,getProducts}
