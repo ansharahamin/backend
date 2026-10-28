@@ -1,10 +1,12 @@
 import mongoose from 'mongoose'
 import userModel from '../models/users.models.js'
 import productModel from '../models/products.model.js'
+
+export async function addToCart(req,res){
 try {
     const productId = req.body.productId
 const quentity = Number(req.body.quentity)||1
-if(!mongoose.Types.ObjectId.isValid(productId)){
+if(!mongoose.Types.ObjectId.isValid(productId)){ //format check
     return res.status(400).json({message:'invalid product id'})
 }
 if(quentity>1){
@@ -16,7 +18,7 @@ if (!product) {
 }
 const user = await userModel.findById(req.user.id)  ///user logged in ha ke nhi???
 if (!user) {
-    return res.status.json({message:'user not found'})
+    return res.status(400).json({message:'user not found'})
 }
 const cartItem = user.cart.find(item => item.product.toString() === productId)  //cart ma product mojood ha??
 if (cartItem) {   //truthy value
@@ -25,8 +27,19 @@ if (cartItem) {   //truthy value
     user.cart.push({product:productId,quentity:quentity})  //falsy (cart empty to new obj push karo db ma quentity user ki assigned quentity ke barabar kardo)
 }
 await user.save()
+const updatedUser = await userModel.findById(user._id).select('cart').populate('cart.product','name des image')
+return res.status(200).json({message:'product added to the cart'})
 } catch (error) {
-    
+    return res.status(500).json({message:'failed to add product to the cart'},
+        error = error.message
+    )
 }
-
+}
+export async function getCart(req,res){
+    const user = await userModel.findById(req.user.id).select('cart').populate('cart.product','name des image')
+    if(!user){
+        return res.status(400).json({message:'user not found'})
+    }
+    return res.status(200).json({cart:user.cart})
+}
 
